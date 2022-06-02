@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .card {
+    @apply w-80 h-full drop-shadow-md flex rounded-md p-6 bg-blue-200 flex-col space-y-2;
+  }
+}
