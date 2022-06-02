@@ -172,7 +172,11 @@ const Home: NextPage = () => {
                     issue?.fields?.progress?.total / 60 / 60 +
                     "hrs"}
                 </p>
-                <p>{"Time spent: " + issue?.fields?.progress?.progress}</p>
+                <p>
+                  {"Time spent: " +
+                    issue?.fields?.progress?.progress / 60 / 60 +
+                    "hrs"}
+                </p>
               </div>
             );
           }
