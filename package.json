@@ -6,6 +6,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "framer-motion": "^6.3.10",
+    "html-react-parser": "^1.4.14",
     "next": "latest",
     "react": "18.1.0",
     "react-dom": "18.1.0"
