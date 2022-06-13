@@ -7,7 +7,7 @@
     @apply drop-shadow-md border border-slate-200;
   }
   .card {
-    @apply w-full h-full flex rounded-md p-6 bg-white flex-col space-y-2;
+    @apply w-full h-fit flex rounded-md p-6 bg-white flex-col space-y-2;
   }
   .button {
     @apply flex py-3 mx-auto font-mono text-sm px-4 bg-blue-600 text-white hover:bg-blue-500 rounded-lg drop-shadow-sm;

@@ -16,6 +16,17 @@ export interface Avatar {
   "48x48": string;
 }
 
+export interface Comment {
+  author: User;
+  body: string;
+  created: string;
+  id: string;
+  renderedBody: string;
+  self: string;
+  updateAuthor: User;
+  updated: string;
+}
+
 export interface Issue {
   expand: string;
   fields: {
@@ -82,6 +93,13 @@ export interface Issue {
       self: string;
       simplified: boolean;
       avatarUrls: Avatar;
+    };
+    status: {
+      description: string;
+      iconUrl: string;
+      id: string;
+      name: string;
+      self: string;
     };
     reporter: User;
     resolution?: null;

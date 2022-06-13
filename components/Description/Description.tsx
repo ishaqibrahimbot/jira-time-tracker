@@ -19,14 +19,14 @@ const Description: FC<DescriptionProps> = ({ issue }) => {
   const { issues, setIssues } = useContext();
 
   const options: HTMLReactParserOptions = {
-    replace: async (domNode) => {
+    replace: (domNode) => {
       if (
         domNode instanceof Element &&
         domNode.attribs &&
         domNode.name === "a"
       ) {
         const props = attributesToProps(domNode.attribs);
-        return await (
+        return (
           <a {...props} target="_blank">
             {domToReact(domNode.children, options)}
           </a>
@@ -36,31 +36,18 @@ const Description: FC<DescriptionProps> = ({ issue }) => {
         const src = props.src;
         const imageId = src.split("/")[3];
 
-        console.log("PROPS: ", props);
+        setimageIdArray((prevArray) => [...prevArray, imageId]);
 
-        // return (
-        //   <Image
-        //     src={props.src}
-        //     height={props.height + "px"}
-        //     width={props.width + "px"}
-        //   />
-        // );
+        domNode.attribs.id = imageId;
 
-        const response = await fetch("/api/get-content", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: imageId }),
-        });
-
-        const { url } = await response.json();
-
-        return (
-          <Image
-            src={url}
-            height={parseInt(props.height)}
-            width={parseInt(props.width)}
-          />
-        );
+        return domNode;
+      } else if (
+        domNode instanceof Element &&
+        domNode.name === "div" &&
+        domNode.attribs.class === "code panel"
+      ) {
+        domNode.attribs.style += " overflow: auto;";
+        return domNode;
       }
     },
   };
@@ -68,35 +55,66 @@ const Description: FC<DescriptionProps> = ({ issue }) => {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState<any>();
+  const [imageIdArray, setimageIdArray] = useState<string[]>([]);
+
+  useEffect(() => {
+    const replaceImageSrcs = async () => {
+      if (description && imageIdArray && show) {
+        await Promise.all(
+          imageIdArray.map(async (id) => {
+            const response = await fetch("/api/get-content", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ id }),
+            });
+            const { url } = await response.json();
+
+            const imageComp = document.getElementById(id) as HTMLImageElement;
+            if (imageComp) {
+              imageComp.src = url;
+            }
+          })
+        );
+      }
+    };
+    replaceImageSrcs();
+  }, [description, show]);
 
   return (
     <div>
       <button
         onClick={async () => {
-          const response = await fetch("/api/issue/get-description", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ issueKey: issue.key }),
-          });
-          const fetchedIssue = await response.json();
+          setLoading(true);
+          if (!description) {
+            const response = await fetch("/api/issue/get-description", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ issueKey: issue.key }),
+            });
+            const fetchedIssue = await response.json();
 
-          const description = await parse(
-            fetchedIssue?.issue?.renderedFields?.description,
-            options
-          );
+            const description = parse(
+              fetchedIssue?.issue?.renderedFields?.description,
+              options
+            );
 
-          console.log("DESCRIPTION: ", description);
-          setDescription(description);
+            setDescription(description);
+          }
           setShow((prevValue) => !prevValue);
+          setLoading(false);
         }}
         className="button"
       >
         {show ? "Hide Description" : "Show Description"}
       </button>
       <AnimatePresence>
-        {loading && <Spinner />}
+        {loading && (
+          <div className="w-full mt-3 flex justify-center">
+            <Spinner />
+          </div>
+        )}
         {show && (
-          <div className="py-4 px-10 border relative rounded-lg mt-6 flex flex-col space-y-4">
+          <div className="py-4 px-10 border overflow-auto relative rounded-lg mt-6 flex flex-col space-y-4">
             {description && description}
           </div>
         )}

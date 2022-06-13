@@ -19,6 +19,5 @@ export default async function handler(
   });
 
   const url = response.url;
-  console.log("IMAGE URL: ", url);
   res.status(200).json({ url });
 }

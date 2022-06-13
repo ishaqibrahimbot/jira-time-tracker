@@ -5,11 +5,13 @@ type Maybe<T> = T | undefined;
 
 interface State {
   issues: Maybe<Issue[]>;
+  filteredIssues: Maybe<Issue[]>;
   project: Maybe<string>;
 }
 
 const initialState: State = {
   issues: undefined,
+  filteredIssues: undefined,
   project: undefined,
 };
 
@@ -17,6 +19,7 @@ type Fn = (...args: any) => void;
 
 interface Context extends State {
   setIssues: Fn;
+  setFilteredIssues: Fn;
   setProject: Fn;
 }
 
@@ -24,7 +27,8 @@ const Context = createContext<Context | State>(initialState);
 
 type Actions =
   | { type: "SET_ISSUES"; issues: Issue[] }
-  | { type: "SET_PROJECT"; project: string };
+  | { type: "SET_PROJECT"; project: string }
+  | { type: "SET_FILTERED_ISSUES"; issues: Issue[] };
 
 const reducer = (state: State, action: Actions): State => {
   switch (action.type) {
@@ -37,6 +41,11 @@ const reducer = (state: State, action: Actions): State => {
       return {
         ...state,
         project: action.project,
+      };
+    case "SET_FILTERED_ISSUES":
+      return {
+        ...state,
+        filteredIssues: action.issues,
       };
     default:
       return {
@@ -58,11 +67,15 @@ export const ContextProvider = ({
   const setProject = (project: string) =>
     dispatch({ type: "SET_PROJECT", project });
 
+  const setFilteredIssues = (issues: Issue[]) =>
+    dispatch({ type: "SET_FILTERED_ISSUES", issues });
+
   const value = useMemo(
     () => ({
       ...state,
       setIssues,
       setProject,
+      setFilteredIssues,
     }),
     [state]
   );

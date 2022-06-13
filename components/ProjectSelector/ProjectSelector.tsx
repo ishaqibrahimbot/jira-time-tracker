@@ -23,7 +23,7 @@ const ProjectSelector: FC<ProjectSelectorProps> = () => {
     });
 
   return (
-    <div className="flex floating card flex-row space-x-6 items-center">
+    <div className="flex flex-row space-x-6 items-center">
       <h1 className="mt-1">Select Project: </h1>
       <select
         className="flex-1 font-mono border p-2 rounded-md"
