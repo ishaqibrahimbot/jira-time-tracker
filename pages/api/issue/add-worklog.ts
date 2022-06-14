@@ -20,8 +20,6 @@ export default async function handler(
     started: format(parseISO(timeStarted), "yyyy-MM-dd'T'HH:mm:ss.SSSXX"),
   };
 
-  console.log("BODY: ", body);
-
   const authToken = process.env.ATLASSIAN_AUTH_TOKEN;
   const response = await fetch(baseUrl.href, {
     method: "POST",

@@ -2,7 +2,7 @@
 
 ## Why?
 
-I made this to solve a very specific pain point I had working with tickets (issues) in [Jira](https://www.atlassian.com/software/jira : there was no way to 'track' the time you've spent working on a particular ticket.
+I made this to solve a very specific pain point I had working with tickets (issues) in [Jira](https://www.atlassian.com/software/jira) : there was no way to 'track' the time you've spent working on a particular ticket.
 
 Since I had to update all my tickets daily with the time I spent working on each, it was an annoying mental/administrative overhead to either take note of the time when I start and finish working on a ticket, or estimate the approximate time myself after completing the work. This got more complicated because sometimes I'd find myself working on two tickets simultaenously because of their inter-related nature.
 
@@ -30,7 +30,7 @@ P.S. The pain point was the main source of motivation for this, but of course I 
 
 - Clone this repo
 - install packages using `npm install` or `yarn install`
-- Go to the [API Token Account Settings](https://id.atlassian.com/manage-profile/security/api-tokens) and create a new token (you need to be logged into your Jira account for the host you want to access)
+- Go to your [API Token Account Settings](https://id.atlassian.com/manage-profile/security/api-tokens) and create a new token (you need to be logged into your Jira account for the host you want to access)
 - add the token to `.env.local` at the root along with the HOST ([HOST].atlassian.net, e.g. convertdigital.atlassian.net) and USER_EMAIL (email that logs you into the HOST):
 
 ```

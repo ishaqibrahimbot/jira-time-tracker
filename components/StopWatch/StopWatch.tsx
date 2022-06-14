@@ -1,6 +1,7 @@
 import { FC, useState, useEffect, useRef } from "react";
 import useContext from "../../store/context";
 import { Issue } from "../../types";
+import Spinner from "../Spinner";
 
 export interface StopWatchProps {
   issue: Issue;
@@ -11,6 +12,7 @@ const StopWatch: FC<StopWatchProps> = ({ issue }) => {
   const [start, setStart] = useState(false);
   const [timeSaved, setTimeSaved] = useState(false);
   const [timeStarted, setTimeStarted] = useState<string>();
+  const [loading, setLoading] = useState(false);
 
   const { setIssues } = useContext();
 
@@ -31,7 +33,7 @@ const StopWatch: FC<StopWatchProps> = ({ issue }) => {
   }, [start]);
 
   const handleAddWorklog = async () => {
-    console.log("ISSUE KEY: ", issue.key);
+    setLoading(true);
     const response = await fetch("/api/issue/add-worklog", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -42,13 +44,13 @@ const StopWatch: FC<StopWatchProps> = ({ issue }) => {
       }),
     });
 
+    // TODO: add error handling in case add-worklog api call fails
     const worklogResponse = await response.json();
-
-    console.log("WORKLOG: ", worklogResponse);
 
     const updateResponse = await fetch("/api/get-issues");
     const issues = await updateResponse.json();
     setIssues(issues?.issues?.issues);
+    setLoading(false);
 
     setTimeSaved(true);
     setTimeStarted(undefined);
@@ -68,7 +70,7 @@ const StopWatch: FC<StopWatchProps> = ({ issue }) => {
       } border border-slate-600 rounded-lg w-fit p-4 h-full flex flex-col space-y-2 items-center`}
     >
       <p className="font-mono text-xl">
-        {new Date(seconds * 1000).toISOString().substr(11, 8)}
+        {new Date(seconds * 1000).toISOString().slice(11, 19)}
       </p>
 
       <div className="flex flex-row space-x-2">
@@ -94,13 +96,19 @@ const StopWatch: FC<StopWatchProps> = ({ issue }) => {
           Reset
         </button>
       </div>
-      <button
-        onClick={() => handleAddWorklog()}
-        disabled={seconds < 60 || timeSaved || start}
-        className="button w-full disabled:bg-gray-300 disabled:text-gray-500 flex justify-center"
-      >
-        Update
-      </button>
+      {loading ? (
+        <div className="button w-full disabled:bg-gray-300 disabled:text-gray-500 flex justify-center">
+          <Spinner />
+        </div>
+      ) : (
+        <button
+          onClick={() => handleAddWorklog()}
+          disabled={seconds < 60 || timeSaved || start}
+          className="button w-full disabled:bg-gray-300 disabled:text-gray-500 flex justify-center"
+        >
+          Update
+        </button>
+      )}
     </div>
   );
 };
