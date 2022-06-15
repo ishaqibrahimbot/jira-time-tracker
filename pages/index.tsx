@@ -48,8 +48,8 @@ const Home: NextPage = () => {
       >
         {filteredIssues?.map((issue) => {
           if (issue?.fields?.project?.key === project) {
-            console.log("ISSUE: ", issue);
-            return <Card issue={issue} />;
+            // console.log("ISSUE: ", issue);
+            return <Card key={issue.key} issue={issue} />;
           }
         })}
       </Masonry>

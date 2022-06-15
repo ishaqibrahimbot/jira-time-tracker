@@ -17,6 +17,41 @@ const StopWatch: FC<StopWatchProps> = ({ issue }) => {
   const { setIssues } = useContext();
 
   const intervalId = useRef<any>();
+  const timeBeforeHidden = useRef<number>();
+
+  // Javascript execution is slowed down deliberately by the browser when tab is minimized/inactive.
+  // Using the Page Visibility API to keep track of when the switch happens and calculate time elapsed directly.
+  // Go back to default setInterval method once tab is active again and time is set correctly
+  useEffect(() => {
+    const handleVisibilityChange = (event: Event) => {
+      if (document.visibilityState === "hidden" && start) {
+        timeBeforeHidden.current = Date.now();
+        console.log(
+          "Stopping timer and switching to hidden mode instead. Current time: ",
+          new Date(seconds * 1000).toISOString().slice(11, 19)
+        );
+        setStart(false);
+      } else if (
+        document.visibilityState === "visible" &&
+        timeBeforeHidden?.current
+      ) {
+        const timeDifference = Date.now() - timeBeforeHidden.current; // in milliseconds
+        setSeconds((prevValue) => prevValue + timeDifference / 1000);
+        setStart(true);
+        timeBeforeHidden.current = undefined;
+        console.log(
+          "Restoring timer and switching off hidden mode. Time elapsed: ",
+          timeDifference / 1000,
+          " seconds"
+        );
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () =>
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [start]);
 
   useEffect(() => {
     if (start) {
