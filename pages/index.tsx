@@ -30,7 +30,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     window.addEventListener("message", (event) => {
-      if (event.origin !== "https://staging.linkcart.app") return;
+      if (event.origin !== "https://jira-time-tracker.vercel.app") return;
       console.log("RECEIVED A MESSAGE: ", event);
     });
   }, []);
