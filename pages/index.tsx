@@ -28,6 +28,13 @@ const Home: NextPage = () => {
     fetchIssues();
   }, []);
 
+  useEffect(() => {
+    window.addEventListener("message", (event) => {
+      if (event.origin !== "https://staging.linkcart.app") return;
+      console.log("RECEIVED A MESSAGE: ", event);
+    });
+  }, []);
+
   return (
     <div className="flex flex-col space-y-8 bg-slate-100 h-full w-full p-16">
       {/* Add assignee here, e.g. 'Ishaq's tickets' */}
