@@ -39,6 +39,13 @@ const Home: NextPage = () => {
     <div className="flex flex-col space-y-8 bg-slate-100 h-full w-full p-16">
       {/* Add assignee here, e.g. 'Ishaq's tickets' */}
       <h1 className="text-3xl mx-auto font-semibold">Jira Time Tracker</h1>
+      <button
+        onClick={() =>
+          window.postMessage("reload", "https://jira-time-tracker.vercel.app")
+        }
+      >
+        Send Message
+      </button>
       <div className="floating card flex flex-row items-center justify-center space-x-10">
         <div className="w-1/2">
           <ProjectSelector />
